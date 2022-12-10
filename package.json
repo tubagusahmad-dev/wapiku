@@ -1,0 +1,37 @@
+{
+  "name": "wapiku",
+  "version": "1.0.0",
+  "description": "This application is use for sending multiple schduled message to whatsapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon .",
+    "build": "babel index.js -d dist",
+    "start": "babel index.js -d dist && node dist/index.js"
+  },
+  "author": "tubagusahmad-dev",
+  "license": "ISC",
+  "dependencies": {
+    "@adiwajshing/baileys": "^4.4.0",
+    "@hapi/boom": "^10.0.0",
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "express-slow-down": "^1.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "link-preview-js": "^3.0.4",
+    "qrcode": "^1.5.1",
+    "simple-json-db": "^2.0.0",
+    "socket.io": "^4.5.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.20.2",
+    "@babel/preset-env": "^7.20.2"
+  }
+}

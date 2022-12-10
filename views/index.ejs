@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+   <head>
+       <title>Wapiku Login</title>
+       <meta name="description" content="Login ke akun wapiku mu"/>
+       <link rel="stylesheet" href="/css/thebe.css"/>
+       <script type="text/javascript" src="/js/jquery-3.6.1.min.js"></script>
+       <script type="text/javascript" src="/js/feather.min.js"></script>
+       <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+       <style>
+            .chart-request-view {
+                margin: 10px;
+                padding: 10px;
+                background-color: aliceblue;
+                border-radius: 10px;
+            }
+
+            .chart-request-view canvas {
+                width: 100%;
+                height: 400px;
+            }
+
+            .device-list-container {
+                margin: 10px;
+                padding: 10px;
+                background-color: rgb(241, 241, 239);
+                border-radius: 10px;
+            }
+
+            .device-list-container #add-device {
+                margin: 4px;
+            }
+
+
+            .dialog-overlay {
+                position: fixed;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                display: none;
+                background-color: rgba(0, 0, 0, 0.527);
+                z-index: 999;
+            }
+
+            .dialog-overlay .dialog {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .dialog-overlay .dialog .content {
+                width: 350px;
+            }
+
+            .dialog-overlay .dialog .content .title{
+                font-size: 24px;
+                margin-top: 15px;
+                margin-bottom: 15px;
+                text-align: center;
+                font-weight: bold;
+            }
+
+            .dialog-overlay .dialog .content .qr-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 250px;
+            }
+
+            .dialog-overlay .dialog .content .qr-container .qr-view {
+                width: 250px;
+                height: 250px;
+                display: none;
+            }
+
+            .dialog-overlay .dialog .content .qr-container .loader {
+                height: 40px;
+                width: 40px;
+                border: 4px solid rgb(200, 236, 200);
+                border-top: 4px solid green;
+            }
+
+            .dialog-overlay .dialog .content .text-qr-status {
+                text-align: center;
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            .device-item {
+                position: relative;
+                min-height: 100px;
+                padding: 4px;
+                width: 100%;
+            }
+
+            .device-item div.card {
+                position: relative;
+                min-height: 90px;
+                display: flex;
+                justify-content: left;
+                align-items: center;
+            }
+
+            .device-item div.card .button-delete-device {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                padding: 5px;
+                margin: 5px;
+            }
+
+            .device-item div.card .button-delete-device .icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            .device-item div.card div {
+                margin-left: 5px;
+            }
+
+            .device-item div.card div .device-name {
+                font-size: 20px;
+                font-weight: bold;
+                color: green;
+            }
+
+            .device-item div.card div .device-number {
+                font-size: 16px;
+                font-weight: bold;
+                margin-top: 3px;
+                color: rgb(86, 189, 86);
+            }
+            
+            
+       </style>
+   </head>
+   <body>
+        <main class="main use-sidenav">
+            <div class="topnav">
+                <div class="content">
+                    <div class="left-nav">
+                        <div class="button secondary circle lg-hidden"><i class="icon" data-feather="menu"></i></div>
+                        <div class="horizontal-spacing"></div>
+                        <span class="title text-secondary">Thebe CSS Project</span>
+                    </div>
+                    <div class="right-nav">
+                        <div class="button dark circle"><i class="icon" data-feather="github"></i></div>
+                        <div class="horizontal-spacing"></div>
+                        <div class="button secondary outline round">Get free website</div>
+                    </div>
+                </div>
+            </div>
+            <div class="sidenav">
+                <nav class="container full-width">
+                    <ul class="round nopadding">
+                        <li>Home</li>
+                        <li>Profile</li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="container full-width">
+                <div class="row full-width">
+                    <div class="col-6-lg">
+                        <div class="center">API Request Data</div>
+                        <div class="chart-request-view">
+                            <canvas id="chart-request-view"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-6">hjhjjh</div>
+                </div>
+                <div class="vertical-spacing"></div>
+                <div class="vertical-spacing"></div>
+                <div class="center">Device List</div>
+                <div class="device-list-container">
+                    <div class="button primary" id="add-device"><i class="icon" data-feather="smartphone"></i><span>Add Device</span></div>
+                    <div class="vertical-spacing"></div>
+                    <div class="row full-width">
+                        <div class="col-12-sm col-6-md col-4-lg">
+                            <div class="device-item full-width">
+                                <div class="card full-width">
+                                    <div class="button primary circle outline"><i class="icon" data-feather="user"></i></div>
+                                    <div>
+                                        <div class="device-name">Tubagus Ahmad</div>
+                                        <div class="device-number">6283873846311</div>
+                                    </div>
+                                    <div class="button danger circle button-delete-device"><i class="icon" data-feather="trash"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12-sm col-6-md col-4-lg">
+                            <div class="device-item full-width">
+                                <div class="card full-width">
+                                    <div class="button primary circle outline"><i class="icon" data-feather="user"></i></div>
+                                    <div>
+                                        <div class="device-name">Tubagus Ahmad</div>
+                                        <div class="device-number">6283873846311</div>
+                                    </div>
+                                    <div class="button danger circle button-delete-device"><i class="icon" data-feather="trash"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dialog-overlay" id="scan-qr-dialog">
+                    <div class="dialog">
+                        <div class="card content">
+                            <div class="title">Add device</div>
+                            <div class="qr-container">
+                                <img class="qr-view" id="qr-view"/>
+                                <div class="loader" id="qr-loader"></div>
+                            </div>
+                            <div class="text-qr-status">Connecting...</div>
+                            <div class="button primary outline full-width" id="close-scan-qr">Close</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="text/javascript">
+            const userIp = `<%-userIp %>`;
+            $(window).on('load', () => {
+                feather.replace();
+                initializeSocket();
+                initializeChart();
+            });
+
+            
+            const initializeSocket = () => {
+                const socket = io();
+
+                $("#add-device").on('click', (evt) => {
+                    connectToWhatsApp(socket);
+                });
+
+                $("#close-scan-qr").on('click', (evt) => {
+                    $("#scan-qr-dialog").hide();
+                });
+
+            }
+
+            const onQRRceived = (qrData) => {
+                $("#qr-loader").hide();
+                $("#qr-view").show();
+                $("#qr-view").attr("src", qrData);
+                $(".text-qr-status").text(`QR code received scan please`);
+            };
+
+            const onConnectionOpened = (device) => {
+                alert(JSON.stringify(device));
+            }
+
+            const connectToWhatsApp = (socket) => {
+                $("#scan-qr-dialog").show();
+                $("#qr-loader").show();
+                $("#qr-view").hide();
+                socket.emit('connect-to-whatsapp', { userIp: userIp, deviceId: makeid(20) });
+                socket.on('qr-code-received', onQRRceived);
+                socket.on('connection-opened', onConnectionOpened);
+            }
+
+            const initializeChart = () => {
+                new Chart($('#chart-request-view'), {
+                    type: "line",
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            borderColor: "red",
+                            backgroundColor: "red",
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {display: false}
+                            },
+                            y: {
+                                grid: {display: false},
+                                min: 0,
+                                max: 15
+                            }
+                        },
+                        elements: {
+                            point:{
+                                radius: 0
+                            }
+                        }
+                    }
+                });
+            }
+
+            const makeid = (length) => {
+                var result           = '';
+                var characters       = '0123456789';
+                var charactersLength = characters.length;
+                for ( var i = 0; i < length; i++ ) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+                return result;
+            }
+
+        </script>
+   </body>
+</html>
